@@ -17,14 +17,15 @@ shared_state = get_shared_state()
 
 st.title("📱 Acrónimo Interactivo")
 
+# Manejo correcto del reinicio
 if "reset" in st.session_state and st.session_state["reset"]:
     shared_state["word"] = ""
     shared_state["suggestions"] = defaultdict(list)
     shared_state["votes"] = defaultdict(dict)
     shared_state["results"] = {}
     shared_state["scores"] = defaultdict(int)
-    st.session_state["reset"] = False
-    st.rerun()
+    del st.session_state["reset"]
+    st.experimental_rerun()
 
 if not shared_state["word"]:
     shared_state["word"] = st.text_input("Elige una palabra base:", placeholder="Escribe aquí y presiona Enter").strip().upper()
@@ -40,11 +41,12 @@ if shared_state["word"]:
     if user_name:
         for letter in letters:
             suggestion = st.text_input(f"🔠 Palabra para '{letter}':", placeholder=f"Escribe para '{letter}' y presiona Enter", key=f"suggestion_{letter}")
-            if suggestion:
+            if suggestion and st.session_state.get(f"submitted_{letter}") is None:
                 shared_state["suggestions"][letter].append((suggestion, user_name))
                 if suggestion not in shared_state["votes"][letter]:
                     shared_state["votes"][letter][suggestion] = 0
-                st.rerun()
+                st.session_state[f"submitted_{letter}"] = True
+                st.experimental_rerun()
     
     st.subheader("👍 Vota por las sugerencias")
     for letter, words in shared_state["suggestions"].items():
@@ -53,7 +55,7 @@ if shared_state["word"]:
             choice = st.radio(f"Elige la mejor palabra para '{letter}':", word_options, key=f"vote_{letter}", horizontal=True)
             if st.button(f"Votar '{letter}'", key=f"vote_btn_{letter}"):
                 shared_state["votes"][letter][choice] += 1
-                st.rerun()
+                st.experimental_rerun()
     
     # Mostrar acrónimo ganador solo cuando haya votos
     st.subheader("🏆 Acrónimo Actual")
@@ -78,4 +80,4 @@ if shared_state["word"]:
     # Botón para reiniciar todo
     if st.button("🔄 Reiniciar Juego", key="reset"):
         st.session_state["reset"] = True
-        st.rerun()
+        st.experimental_rerun()
