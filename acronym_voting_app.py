@@ -35,16 +35,16 @@ if shared_state["word"]:
                 shared_state["suggestions"][letter].append((suggestion, user_name))
                 if suggestion not in shared_state["votes"][letter]:
                     shared_state["votes"][letter][suggestion] = 0
-                st.rerun()
+                st.experimental_rerun()
     
     st.subheader("👍 Vota por las sugerencias")
     for letter, words in shared_state["suggestions"].items():
         if words:
-            word_options = [w[0] for w in words]  # Extrae solo las palabras
+            word_options = list(set(w[0] for w in words))  # Extrae solo las palabras únicas
             choice = st.radio(f"Elige la mejor palabra para '{letter}':", word_options, key=f"vote_{letter}", horizontal=True)
             if st.button(f"Votar '{letter}'", key=f"vote_btn_{letter}"):
                 shared_state["votes"][letter][choice] += 1
-                st.rerun()
+                st.experimental_rerun()
     
     # Mostrar acrónimo ganador solo cuando haya votos
     st.subheader("🏆 Acrónimo Actual")
@@ -55,7 +55,6 @@ if shared_state["word"]:
     st.markdown(f"**{' '.join(shared_state['results'].values())}**")
     
     # Actualizar puntuación de los usuarios correctamente
-    shared_state["scores"] = defaultdict(int)  # Reiniciar para evitar duplicación
     for letter, word in shared_state["results"].items():
         if word != "?":  # Solo cuenta puntos para palabras ganadoras
             for suggestion, user in shared_state["suggestions"][letter]:
@@ -70,4 +69,4 @@ if shared_state["word"]:
     # Botón para reiniciar todo
     if st.button("🔄 Reiniciar Juego", key="reset"):
         shared_state.clear()
-        st.rerun()
+        st.experimental_rerun()
