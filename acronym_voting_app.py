@@ -42,7 +42,8 @@ if shared_state["word"]:
     
     st.subheader("✍️ Sugiere palabras para cada letra")
     user_name = st.text_input("👤 Tu nombre:", placeholder="Escribe tu nombre y presiona Enter", key="user_name")
-    st.session_state["user_name"] = user_name
+    if "user_name" not in st.session_state:
+        st.session_state["user_name"] = user_name
     
     if user_name:
         for letter in letters:
