@@ -17,6 +17,15 @@ shared_state = get_shared_state()
 
 st.title("📱 Acrónimo Interactivo")
 
+if "reset" in st.session_state and st.session_state["reset"]:
+    shared_state["word"] = ""
+    shared_state["suggestions"] = defaultdict(list)
+    shared_state["votes"] = defaultdict(dict)
+    shared_state["results"] = {}
+    shared_state["scores"] = defaultdict(int)
+    st.session_state["reset"] = False
+    st.rerun()
+
 if not shared_state["word"]:
     shared_state["word"] = st.text_input("Elige una palabra base:", placeholder="Escribe aquí y presiona Enter").strip().upper()
 
@@ -68,5 +77,5 @@ if shared_state["word"]:
     
     # Botón para reiniciar todo
     if st.button("🔄 Reiniciar Juego", key="reset"):
-        shared_state.clear()
+        st.session_state["reset"] = True
         st.rerun()
