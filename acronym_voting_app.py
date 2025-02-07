@@ -1,6 +1,8 @@
 import streamlit as st
 from collections import defaultdict
 
+st.set_page_config(page_title="Acrónimo Interactivo", layout="centered")
+
 @st.cache_resource
 def get_shared_state():
     return {
@@ -13,7 +15,6 @@ def get_shared_state():
 
 shared_state = get_shared_state()
 
-st.set_page_config(page_title="Acrónimo Interactivo", layout="centered")
 st.title("📱 Acrónimo Interactivo")
 
 if not shared_state["word"]:
