@@ -35,7 +35,7 @@ if shared_state["word"]:
                 shared_state["suggestions"][letter].append((suggestion, user_name))
                 if suggestion not in shared_state["votes"][letter]:
                     shared_state["votes"][letter][suggestion] = 0
-                st.experimental_rerun()
+                st.rerun()
     
     st.subheader("👍 Vota por las sugerencias")
     for letter, words in shared_state["suggestions"].items():
@@ -44,7 +44,7 @@ if shared_state["word"]:
             choice = st.radio(f"Elige la mejor palabra para '{letter}':", word_options, key=f"vote_{letter}", horizontal=True)
             if st.button(f"Votar '{letter}'", key=f"vote_btn_{letter}"):
                 shared_state["votes"][letter][choice] += 1
-                st.experimental_rerun()
+                st.rerun()
     
     # Mostrar acrónimo ganador solo cuando haya votos
     st.subheader("🏆 Acrónimo Actual")
@@ -69,4 +69,4 @@ if shared_state["word"]:
     # Botón para reiniciar todo
     if st.button("🔄 Reiniciar Juego", key="reset"):
         shared_state.clear()
-        st.experimental_rerun()
+        st.rerun()
